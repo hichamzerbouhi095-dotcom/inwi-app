@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4a1d8f">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>طلبات الراوتر</title>
+<style>
+:root{--bg:#f6f3fb;--card:#fff;--ink:#1f1633;--mute:#6f6585;--line:#e4ddf0;--main:#4a1d8f;--main-ink:#fff;--gold:#ffc20e;--ok:#17803d;--okbg:#e2f5e8;--wait:#9a6700;--waitbg:#fff3cd;--no:#b42318;--nobg:#fde7e4;box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root{--bg:#150f24;--card:#211936;--ink:#f1ecfa;--mute:#a79cc0;--line:#35294f;--main:#8c5be0;--main-ink:#fff;--ok:#6fdc97;--okbg:#17321f;--wait:#ffd466;--waitbg:#3a2e0a;--no:#ff9a8f;--nobg:#3d1612}}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+header{background:var(--main);color:var(--main-ink);padding:16px 16px 56px}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:720px;margin:auto}
+h1{font-size:20px;margin:0}
+.iconbtn{background:rgba(255,255,255,.16);border:0;color:inherit;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
+main{max-width:720px;margin:-40px auto 0;padding:0 14px 110px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:var(--card);border-radius:14px;padding:12px 6px;border:1px solid var(--line)}
+.stat{text-align:center}
+.stat b{display:block;font-size:20px}
+.stat span{font-size:12px;color:var(--mute)}
+.money b{color:var(--ok)}
+.tools{display:flex;gap:8px;margin:14px 0 8px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--main);outline-offset:1px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 14px;font:inherit;cursor:pointer}
+.chip.on{background:var(--main);color:var(--main-ink);border-color:var(--main)}
+.order{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:10px;border-inline-start:5px solid var(--line)}
+.order.s-pending{border-inline-start-color:var(--gold)}
+.order.s-done{border-inline-start-color:var(--ok)}
+.order.s-cancel{border-inline-start-color:var(--no)}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.name{font-weight:700;font-size:17px}
+.sub{color:var(--mute);font-size:14px;margin-top:2px;overflow-wrap:anywhere}
+.badge{font-size:12px;border-radius:20px;padding:2px 10px;white-space:nowrap}
+.b-pending{background:var(--waitbg);color:var(--wait)}
+.b-done{background:var(--okbg);color:var(--ok)}
+.b-cancel{background:var(--nobg);color:var(--no)}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.acts a,.acts button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:9px;padding:6px 11px;font:inherit;font-size:14px;cursor:pointer;text-decoration:none}
+.acts .wa{background:#25d366;color:#07351a;border-color:transparent;font-weight:700}
+.acts .go{background:var(--okbg);color:var(--ok);border-color:transparent}
+.acts .del{color:var(--no)}
+.empty{text-align:center;color:var(--mute);padding:40px 10px}
+.fab{position:fixed;inset-inline-start:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--gold);color:#2b1a00;border:0;border-radius:30px;padding:14px 22px;font:700 17px inherit;font-family:inherit;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}
+dialog{width:min(520px,94vw);max-height:92vh;border:0;border-radius:16px;padding:0;background:var(--bg);color:var(--ink)}
+dialog::backdrop{background:rgba(20,10,40,.55)}
+.dlg{padding:16px}
+.dlg h2{margin:0 0 12px;font-size:18px}
+label{display:block;font-size:14px;color:var(--mute);margin:10px 0 4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.foot{display:flex;gap:8px;margin-top:16px}
+.btn{flex:1;border:0;border-radius:10px;padding:12px;font:700 16px inherit;font-family:inherit;cursor:pointer;background:var(--main);color:var(--main-ink)}
+.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.hint{font-size:13px;color:var(--mute);margin:6px 0}
+.toast{position:fixed;inset-inline:0;bottom:90px;margin:auto;width:max-content;max-width:90vw;background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:20px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header><div class="top"><h1>📡 طلبات الراوتر – ADSL Extra</h1><button class="iconbtn" id="openMenu">⚙️ خيارات</button></div></header>
+<main>
+  <section class="stats" aria-label="إحصائيات">
+    <div class="stat"><b id="stAll">0</b><span>كل الطلبات</span></div>
+    <div class="stat"><b id="stWait">0</b><span>في الانتظار</span></div>
+    <div class="stat"><b id="stDone">0</b><span>تم التوصيل</span></div>
+    <div class="stat money"><b id="stMoney">0</b><span>درهم (المسلّم)</span></div>
+  </section>
+  <div class="tools"><input id="q" type="search" placeholder="بحث بالإسم أو الرقم أو العنوان…" aria-label="بحث"></div>
+  <div class="chips" id="chips"></div>
+  <div id="list"></div>
+</main>
+<button class="fab" id="add">＋ طلب جديد</button>
+<div class="toast" id="toast" role="status"></div>
+
+<dialog id="dlgOrder"><form method="dialog" class="dlg" id="form" onsubmit="return false">
+  <h2 id="dTitle">طلب جديد</h2>
+  <label for="fName">الإسم الكامل *</label><input id="fName" required autocomplete="off">
+  <label for="fPhone">رقم الهاتف *</label><input id="fPhone" type="tel" inputmode="tel" required placeholder="06XXXXXXXX">
+  <label for="fAddr">العنوان</label><input id="fAddr" autocomplete="off">
+  <div class="two">
+    <div><label for="fCity">المدينة</label><input id="fCity" autocomplete="off"></div>
+    <div><label for="fDate">تاريخ الطلب</label><input id="fDate" type="date"></div>
+  </div>
+  <div class="two">
+    <div><label for="fQty">العدد</label><input id="fQty" type="number" min="1" value="1" inputmode="numeric"></div>
+    <div><label for="fPrice">الثمن (درهم)</label><input id="fPrice" type="number" min="0" inputmode="numeric"></div>
+  </div>
+  <label for="fStatus">الحالة</label><select id="fStatus"></select>
+  <div id="extraBox"></div>
+  <label for="fNote">ملاحظات</label><textarea id="fNote" rows="2"></textarea>
+  <div class="foot"><button class="btn alt" type="button" id="cancel">إلغاء</button><button class="btn" type="button" id="save">حفظ</button></div>
+</form></dialog>
+
+<dialog id="dlgMenu"><div class="dlg">
+  <h2>خيارات</h2>
+  <label for="sPrice">الثمن الافتراضي للراوتر (درهم)</label><input id="sPrice" type="number" min="0" inputmode="numeric">
+  <label for="sMsg">رسالة الواتساب الجاهزة</label><textarea id="sMsg" rows="5"></textarea>
+  <p class="hint">تقدر تستعمل: {name} {phone} {addr} {city} {qty} {price} {total} {status} {date}، وكيتبدلو بمعلومات الطلب تلقائياً.</p>
+  <p class="hint">كل المعلومات كتتخزن فهاد التيليفون فقط، وكيخدم بلا إنترنت. دير نسخة احتياطية من وقت لآخر.</p>
+  <div class="foot"><button class="btn alt" type="button" id="bCsv">تصدير Excel (CSV)</button><button class="btn alt" type="button" id="bJson">نسخة احتياطية</button></div>
+  <div class="foot"><button class="btn alt" type="button" id="bImport">استرجاع نسخة</button><button class="btn" type="button" id="mClose">تم</button></div>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+</div></dialog>
+
+<script>
+/* =====================================================
+   مكان الإضافات (خاص بصاحب التطبيق)
+   ===================================================== */
+// 1) حقول إضافية فالفورمولير: زيد سطر جديد بين [ ] وغادي يبان تلقائياً فالفورمولير والبطاقة والتصدير.
+//    type: 'text' | 'number' | 'date' | 'tel'
+//    مثال: { key:'cin', label:'رقم البطاقة الوطنية', type:'text' },
+const EXTRA_FIELDS = [
+  // { key:'cin', label:'رقم البطاقة الوطنية', type:'text' },
+];
+// 2) الحالات: بدل الأسماء ولا زيد حالة جديدة (cls: pending | done | cancel)
+const STATUSES = [
+  { key:'pending', label:'في الانتظار', cls:'pending' },
+  { key:'done',    label:'تم التوصيل',  cls:'done'    },
+  { key:'cancel',  label:'ملغى',        cls:'cancel'  }
+];
+/* ===================================================== */
+
+const KEY = 'inwi_orders_v1', KEYS = 'inwi_settings_v1';
+const MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const $ = id => document.getElementById(id);
+let orders = [], settings = { price: 150, msg: 'السلام عليكم {name}، معاك من خدمة Inwi.\nالطلب ديالك ديال راوتر ADSL Extra ({qty} × {price} درهم، المجموع {total} درهم) حالتو: {status}.\nالعنوان: {addr} {city}' }, filter = 'all', editId = null;
+
+function load(){
+  try { orders = JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ orders = []; }
+  try { settings = Object.assign(settings, JSON.parse(localStorage.getItem(KEYS)) || {}); } catch(e){}
+}
+function persist(){
+  try { localStorage.setItem(KEY, JSON.stringify(orders)); localStorage.setItem(KEYS, JSON.stringify(settings)); }
+  catch(e){ toast('تعذّر الحفظ، دير نسخة احتياطية'); }
+}
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = () => new Date().toISOString().slice(0,10);
+const st = k => STATUSES.find(s => s.key === k) || STATUSES[0];
+function toast(t){ const e=$('toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove('on'),2200); }
+function waNum(p){ let n=String(p).replace(/\D/g,''); if(n.startsWith('00')) n=n.slice(2); else if(n.startsWith('0')) n='212'+n.slice(1); return n; }
+function waLink(o){
+  const vars = { name:o.name, phone:o.phone, addr:o.addr||'', city:o.city||'', qty:o.qty||1, price:o.price||0,
+    total:(+o.price||0)*(+o.qty||1), status:st(o.status).label, date:o.date||'' };
+  const text = (settings.msg || '').replace(/\{(\w+)\}/g, (m,k) => k in vars ? vars[k] : m);
+  const t = encodeURIComponent(text);
+  return MOBILE ? 'whatsapp://send?phone=' + waNum(o.phone) + '&text=' + t
+                : 'https://wa.me/' + waNum(o.phone) + (text ? '?text=' + t : '');
+}
+
+function render(){
+  const q = $('q').value.trim().toLowerCase();
+  const done = orders.filter(o => o.status === 'done');
+  $('stAll').textContent = orders.length;
+  $('stWait').textContent = orders.filter(o => o.status === 'pending').length;
+  $('stDone').textContent = done.length;
+  $('stMoney').textContent = done.reduce((a,o) => a + (+o.price||0) * (+o.qty||1), 0);
+
+  $('chips').innerHTML = [{key:'all',label:'الكل'}].concat(STATUSES).map(s =>
+    `<button class="chip ${filter===s.key?'on':''}" data-f="${s.key}">${esc(s.label)}</button>`).join('');
+
+  const rows = orders.filter(o => (filter==='all' || o.status===filter) &&
+    (!q || [o.name,o.phone,o.addr,o.city,o.note].join(' ').toLowerCase().includes(q)))
+    .sort((a,b) => (b.date||'').localeCompare(a.date||'') || b.id - a.id);
+
+  $('list').innerHTML = rows.length ? rows.map(o => {
+    const s = st(o.status);
+    const extras = EXTRA_FIELDS.filter(f => o.extra && o.extra[f.key]).map(f => `${esc(f.label)}: ${esc(o.extra[f.key])}`).join(' • ');
+    return `<article class="order s-${s.cls}">
+      <div class="row"><div><div class="name">${esc(o.name)}</div>
+        <div class="sub" dir="ltr" style="text-align:right">${esc(o.phone)}</div></div>
+        <span class="badge b-${s.cls}">${esc(s.label)}</span></div>
+      <div class="sub">📍 ${esc([o.addr,o.city].filter(Boolean).join('، ')) || 'بلا عنوان'}</div>
+      <div class="sub">🗓 ${esc(o.date||'')} • ${o.qty||1} × ${o.price||0} درهم</div>
+      ${extras ? `<div class="sub">${extras}</div>` : ''}
+      ${o.note ? `<div class="sub">📝 ${esc(o.note)}</div>` : ''}
+      <div class="acts">
+        <a href="tel:${esc(o.phone)}">📞 اتصال</a>
+        <a class="wa" href="${waLink(o)}" ${MOBILE ? '' : 'target="_blank" rel="noopener"'} aria-label="واتساب">💬 واتساب</a>
+        ${o.status!=='done' ? `<button class="go" data-a="done" data-id="${o.id}">✔ تم التوصيل</button>` : ''}
+        <button data-a="edit" data-id="${o.id}">✏️ تعديل</button>
+        <button class="del" data-a="del" data-id="${o.id}">🗑</button>
+      </div></article>`;
+  }).join('') : `<div class="empty">${orders.length ? 'ما كاين حتى نتيجة' : 'ما كاين حتى طلب بعد.<br>ضغط على «طلب جديد» باش تبدا.'}</div>`;
+}
+
+function openForm(id){
+  editId = id || null;
+  const o = orders.find(x => x.id === id) || {};
+  $('dTitle').textContent = id ? 'تعديل الطلب' : 'طلب جديد';
+  $('fName').value = o.name || ''; $('fPhone').value = o.phone || '';
+  $('fAddr').value = o.addr || ''; $('fCity').value = o.city || '';
+  $('fDate').value = o.date || today(); $('fQty').value = o.qty || 1;
+  $('fPrice').value = o.price ?? settings.price; $('fNote').value = o.note || '';
+  $('fStatus').innerHTML = STATUSES.map(s => `<option value="${s.key}" ${s.key===(o.status||'pending')?'selected':''}>${esc(s.label)}</option>`).join('');
+  $('extraBox').innerHTML = EXTRA_FIELDS.map(f => `<label for="x_${f.key}">${esc(f.label)}</label><input id="x_${f.key}" type="${f.type||'text'}" value="${esc((o.extra||{})[f.key]||'')}">`).join('');
+  $('dlgOrder').showModal();
+}
+function saveForm(){
+  const name = $('fName').value.trim(), phone = $('fPhone').value.trim();
+  if(!name || !phone){ toast('الإسم ورقم الهاتف ضروريين'); return; }
+  const extra = {}; EXTRA_FIELDS.forEach(f => extra[f.key] = $('x_'+f.key).value.trim());
+  const data = { name, phone, addr:$('fAddr').value.trim(), city:$('fCity').value.trim(), date:$('fDate').value||today(),
+    qty:+$('fQty').value||1, price:+$('fPrice').value||0, status:$('fStatus').value, note:$('fNote').value.trim(), extra };
+  if(editId){ Object.assign(orders.find(x => x.id === editId), data); }
+  else { orders.push(Object.assign({ id: Date.now() }, data)); }
+  persist(); render(); $('dlgOrder').close(); toast('تسجل الطلب ✔');
+}
+
+function download(name, text, type){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function exportCsv(){
+  const head = ['الإسم','الهاتف','العنوان','المدينة','التاريخ','العدد','الثمن','الحالة','ملاحظات'].concat(EXTRA_FIELDS.map(f => f.label));
+  const cell = v => '"' + String(v ?? '').replace(/"/g,'""') + '"';
+  const lines = orders.map(o => [o.name,o.phone,o.addr,o.city,o.date,o.qty,o.price,st(o.status).label,o.note]
+    .concat(EXTRA_FIELDS.map(f => (o.extra||{})[f.key])).map(cell).join(','));
+  download('orders-' + today() + '.csv', '\ufeff' + [head.map(cell).join(',')].concat(lines).join('\n'), 'text/csv;charset=utf-8');
+}
+
+/* events */
+$('add').onclick = () => openForm();
+$('cancel').onclick = () => $('dlgOrder').close();
+$('save').onclick = saveForm;
+$('q').oninput = render;
+$('chips').onclick = e => { const b = e.target.closest('[data-f]'); if(b){ filter = b.dataset.f; render(); } };
+$('list').onclick = e => {
+  const b = e.target.closest('[data-a]'); if(!b) return;
+  const id = +b.dataset.id, o = orders.find(x => x.id === id);
+  if(b.dataset.a === 'edit') openForm(id);
+  if(b.dataset.a === 'done'){ o.status = 'done'; persist(); render(); toast('تم التوصيل ✔'); }
+  if(b.dataset.a === 'del' && confirm('واش متأكد بغيتي تمسح هاد الطلب؟')){ orders = orders.filter(x => x.id !== id); persist(); render(); }
+};
+$('openMenu').onclick = () => { $('sPrice').value = settings.price; $('sMsg').value = settings.msg || ''; $('dlgMenu').showModal(); };
+$('mClose').onclick = () => { settings.price = +$('sPrice').value || 0; settings.msg = $('sMsg').value; persist(); $('dlgMenu').close(); };
+$('bCsv').onclick = exportCsv;
+$('bJson').onclick = () => download('orders-backup-' + today() + '.json', JSON.stringify({ orders, settings }), 'application/json');
+$('bImport').onclick = () => $('file').click();
+$('file').onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if(!Array.isArray(d.orders)) throw 0;
+      if(!confirm('هاد العملية غادي تعوض الطلبات اللي عندك دابا. نكمل؟')) return;
+      orders = d.orders; settings = Object.assign(settings, d.settings || {}); persist(); render(); toast('تسترجعات النسخة ✔');
+    } catch(err){ toast('الملف ماشي صحيح'); }
+  };
+  r.readAsText(f); e.target.value = '';
+};
+
+load(); render();
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js").catch(function(){}); }
+</script>
+</body>
+</html>
